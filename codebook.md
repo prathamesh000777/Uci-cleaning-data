@@ -117,3 +117,24 @@ Setting the column names of dataset to the above vector
 ```{r eval=FALSE}
 names(combined_ext_features_labels) <- ext_uci_feat_chr
 ```
+
+# Step 5: Average of variable grouped by acitivity and subject
+
+Reading the subject files and combining
+```{r eval=FALSE}
+sub_train <- read_table('./UCI_HAR_Dataset/train/subject_train.txt', col_names = FALSE)
+sub_test <- read_table('./UCI_HAR_Dataset/test/subject_test.txt', col_names = FALSE)
+sub <- rbind(sub_train,sub_test)
+```
+
+Combining the suject vector to new column of tidy data of step 4 and renaming it
+```{r eval=FALSE}
+combined_sub <- cbind(combined_ext_features_labels,sub)
+
+combined_sub <- rename(combined_sub, subject = X1)
+```
+
+Average of variable grouped by acitivity and subject
+```{r eval=FALSE}
+combined_grouped <- aggregate(combined_sub[, 1:66], list(x$labels,x$subject), mean)
+```

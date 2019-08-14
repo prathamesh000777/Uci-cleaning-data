@@ -55,5 +55,16 @@ combined_ext_features_labels - adding the description label to the combined data
 ext_uci_feat_chr -             converted extracted features table to character vector
 
 
+sub_train - vector of suject of training set
 
 
+sub_test - vector of suject of test set
+
+
+sub <- combined vector of subjects
+
+
+combined_sub - tidy dataset of step 4 with suject column added to it
+
+
+combined_grouped - Average of variable grouped by acitivity and subject
