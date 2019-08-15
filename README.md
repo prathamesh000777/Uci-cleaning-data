@@ -1,70 +1,61 @@
 ---
-title: "README.MD"
+title: "Untitled"
 author: "Prathamesh"
-date: "8/13/2019"
+date: "8/15/2019"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-# Files read
-X_train.txt,y_train.txt,X_test.txt,y_test.txt, activity_labels.txt, features.txt in the shared file
-
-# Data files created
-uci_train - contains X_train data (1,7352) which is 70% of the total data
+## Human Activity Recognition Using Smartphones Data Set 
 
 
-uci_test - contains X_test data (1,2947) which is 30% of the total data
+The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed **six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING)** wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+
+The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain. See 'features_info.txt' for more details. 
+
+For each record it is provided:
+=============================
+
+- A 561-feature vector with time and frequency domain variables (X_train, X_test)
+- Its activity label. (activity_labels.txt)
+- An identifier of the subject who carried out the experiment. (suject_train.txt, subject_test.txt)
+
+The dataset includes the following files:
+=========================================
+
+- 'README.txt'
+
+- 'features_info.txt': Shows information about the variables used on the feature vector.
+
+- 'features.txt': List of all features.
+
+- 'activity_labels.txt': Links the class labels with their activity name.
+
+- 'train/X_train.txt': Training set.
+
+- 'train/y_train.txt': Training labels.
+
+- 'test/X_test.txt': Test set.
+
+- 'test/y_test.txt': Test labels.
+
+The following files are available for the train and test data. Their descriptions are equivalent. 
+
+- 'train/subject_train.txt': Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30. 
 
 
-combined - total training and test data 100% of the data
 
+Notes: 
+======
+- Features are normalized and bounded within [-1,1].
+- Each feature vector is a row on the text file.
 
-uci_feat - contains features of the data
+For more information about this dataset contact: activityrecognition@smartlab.ws
 
+License:
+========
+Use of this dataset in publications must be acknowledged by referencing the following publication [1] 
 
-ext_mean - vector of indices for features having mean() at the end
+[1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
 
+This dataset is distributed AS-IS and no responsibility implied or explicit can be addressed to the authors or their institutions for its use or misuse. Any commercial use is prohibited.
 
-ext_std - vector of indices for features having std() at the end
-
-
-combined_ext_features - contains only extracted features like mean() and std()
-
-
-uci_train_label - labels of the X_train file
-
-
-uci_test_label - labels of the X_test file
-
-
-uci_labels -                   labels for combined train and test file
-
-
-label -                        descriptive labels
-
-
-uci_label_descrip -            adding description label to combined data
-
-
-combined_ext_features_labels - adding the description label to the combined data
-
-
-ext_uci_feat_chr -             converted extracted features table to character vector
-
-
-sub_train - vector of suject of training set
-
-
-sub_test - vector of suject of test set
-
-
-sub <- combined vector of subjects
-
-
-combined_sub - tidy dataset of step 4 with suject column added to it
-
-
-combined_grouped - Average of variable grouped by acitivity and subject
+Jorge L. Reyes-Ortiz, Alessandro Ghio, Luca Oneto, Davide Anguita. November 2012.

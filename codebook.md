@@ -5,136 +5,106 @@ date: "8/12/2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-# Step1 : Reading the files
-Since the train and test data are space seperated files it is easy to read it using readr
-package.
 
-```{r eval=FALSE}
-library(readr)
-```
+# Features info
 
-Reading the file X_train.txt but before that extract the files and store in UCI_HAR_Dataset
-folder. Next set working directory to the location where you extracted the above file.
+The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz. Then they were filtered using a median filter and a 3rd order low pass Butterworth filter with a corner frequency of 20 Hz to remove noise. Similarly, the acceleration signal was then separated into body and gravity acceleration signals (tBodyAcc-XYZ and tGravityAcc-XYZ) using another low pass Butterworth filter with a corner frequency of 0.3 Hz. 
 
-```{r eval=FALSE}
-setwd('D:/R_language/data cleaning/assignment_4')
-```
+Subsequently, the body linear acceleration and angular velocity were derived in time to obtain Jerk signals (tBodyAccJerk-XYZ and tBodyGyroJerk-XYZ). Also the magnitude of these three-dimensional signals were calculated using the Euclidean norm (tBodyAccMag, tGravityAccMag, tBodyAccJerkMag, tBodyGyroMag, tBodyGyroJerkMag). 
 
-Reading train file in folder UCI_HAR_Dataset -> train -> X_train.txt.
-```{r eval=FALSE}
-uci_train <- read_table('./UCI_HAR_Dataset/train/X_train.txt', col_names = FALSE) 
-```
+Finally a Fast Fourier Transform (FFT) was applied to some of these signals producing fBodyAcc-XYZ, fBodyAccJerk-XYZ, fBodyGyro-XYZ, fBodyAccJerkMag, fBodyGyroMag, fBodyGyroJerkMag. (Note the 'f' to indicate frequency domain signals). 
 
-Reading test file
-```{r eval=FALSE}
-uci_test <- read_table('./UCI_HAR_Dataset/test/X_test.txt', col_names = FALSE) 
-```
+These signals were used to estimate variables of the feature vector for each pattern:  
+'-XYZ' is used to denote 3-axial signals in the X, Y and Z directions.
 
-Merging train and test data.
-```{r eval=FALSE}
-combined <- rbind(uci_train,uci_test)
-```
+tBodyAcc-XYZ
+tGravityAcc-XYZ
+tBodyAccJerk-XYZ
+tBodyGyro-XYZ
+tBodyGyroJerk-XYZ
+tBodyAccMag
+tGravityAccMag
+tBodyAccJerkMag
+tBodyGyroMag
+tBodyGyroJerkMag
+fBodyAcc-XYZ
+fBodyAccJerk-XYZ
+fBodyGyro-XYZ
+fBodyAccMag
+fBodyAccJerkMag
+fBodyGyroMag
+fBodyGyroJerkMag
 
-# Step 2 : Reading Features and extracting mean and std columns
-Reading the feature file
-```{r eval=FALSE}
-uci_feat <- read_table('./UCI_HAR_Dataset/features.txt', col_names = FALSE)
-```
 
-Extracting column numbers of the features with mean()
-```{r eval=FALSE}
-ext_mean <- grep('\\bmean()\\b',uci_feat$X1)
-```
+The set of variables that were estimated from these signals are: 
 
-Extracting column numbers of the features with std()
-```{r eval=FALSE}
-ext_std <- grep('\\bstd()\\b',uci_feat$X1)
-```
-  
-Merging the extracted column numbers of mean and std features
-```{r eval=FALSE}
-ext_features <- c(ext_mean,ext_std)
-```
 
-Subsetting the original dataframe(combined) for mean and std only
-```{r eval = FALSE}
-combined_ext_features <- combined[ext_features]
-```
+mean(): Mean value
+std(): Standard deviation
 
-# Step3 : Reading label and joining it to dataset
-Reading the training label file
-```{r eval=FALSE}
-uci_train_label <- read_table('./UCI_HAR_Dataset/test/y_train.txt', col_names = FALSE) 
-```
 
-Reading the test label file
-```{r eval=FALSE}
-uci_test_label <- read_table('./UCI_HAR_Dataset/test/y_test.txt', col_names = FALSE) 
-```
+# Changes to features and dataset
 
-Combining the train and test labels
-```{r eval=FALSE}
-uci_label <- rbind(uci_train_label,uci_test_label)
-```
+First we combine the train and test set to form a single set. Then subset the combined dataset to get features with only mean() and std().
+Next we will put some description to each row by adding descriptive labels and subject column at the end to this subsetted data.
+Then to make features descriptive we remove the numbers from the feauture and replace 't' by time domain signal and 'f' by frequency domain signal.
+Next we group the data by labels and subject to get mean of features for each.
 
-Reading the descriptive label file
-```{r eval=FALSE}
-label <- read_table('./UCI_HAR_Dataset/activity_labels.txt', col_names = FALSE)
-```
+# Data files created during cleaning with their description
 
-Now for merging the labels from y_train, y_test and activity_labels file we use join from plyr package and not merge because merge shuffle the rows whereas join retains the row as it is
-```{r eval=FALSE}
-library(plyr)
-uci_label_descrip <- join(uci_label,label)
-```
+uci_train - contains X_train data (1,7352) which is 70% of the total data
 
-Merging this descriptive label column to dataset
-```{r eval=FALSE}
-combined_ext_features_labels <- cbind(combined_ext_features,uci_label_descrip$X2)
-```
 
-# Step 4: Labelling the dataset
-To get the feature names with mean() and std() in it we use the ext_features vector to subset the uci_feature dataset
-```{r eval=FALSE}
-ext_uci_feat <- uci_feat[ext_features,]
-```
+uci_test - contains X_test data (1,2947) which is 30% of the total data
 
-Adding one more feature to the above dataset i.e. the labels column
-```{r eval=FALSE}
-ext_uci_feat <- rbind(ext_uci_feat,'labels')
-```
 
-Next we need to convert the ext_uci_feat from tibble to character vector
-```{r eval=FALSE}
-ext_uci_feat_chr <- pull(ext_uci_feat,X1)
-```
+combined - total training and test data 100% of the data
 
-Setting the column names of dataset to the above vector
-```{r eval=FALSE}
-names(combined_ext_features_labels) <- ext_uci_feat_chr
-```
 
-# Step 5: Average of variable grouped by acitivity and subject
+uci_feat - contains features of the data
 
-Reading the subject files and combining
-```{r eval=FALSE}
-sub_train <- read_table('./UCI_HAR_Dataset/train/subject_train.txt', col_names = FALSE)
-sub_test <- read_table('./UCI_HAR_Dataset/test/subject_test.txt', col_names = FALSE)
-sub <- rbind(sub_train,sub_test)
-```
 
-Combining the suject vector to new column of tidy data of step 4 and renaming it
-```{r eval=FALSE}
-combined_sub <- cbind(combined_ext_features_labels,sub)
+ext_mean - vector of indices for features having mean() at the end
 
-combined_sub <- rename(combined_sub, subject = X1)
-```
 
-Average of variable grouped by acitivity and subject
-```{r eval=FALSE}
-combined_grouped <- aggregate(combined_sub[, 1:66], list(x$labels,x$subject), mean)
-```
+ext_std - vector of indices for features having std() at the end
+
+
+combined_ext_features - contains only extracted features like mean() and std()
+
+
+uci_train_label - labels of the X_train file
+
+
+uci_test_label - labels of the X_test file
+
+
+uci_labels -                   labels for combined train and test file
+
+
+label -                        descriptive labels
+
+
+uci_label_descrip -            adding description label to combined data
+
+
+combined_ext_features_labels - adding the description label to the combined data
+
+
+ext_uci_feat_des -             features with description and some cleaning
+
+
+sub_train - vector of suject of training set
+
+
+sub_test - vector of suject of test set
+
+
+sub <- combined vector of subjects
+
+
+combined_sub - tidy dataset of step 4 with suject column added to it
+
+
+combined_grouped - Average of variable grouped by acitivity and subject
